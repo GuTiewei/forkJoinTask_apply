@@ -11,7 +11,7 @@ public abstract class VirtualTask extends RecursiveTask<List<TaskResult>>{
 	
 	protected final int end;   //任务单元end index
 	
-	protected VirtualPortTask(Object[] param, int start, int end) {
+	protected VirtualTask(Object[] param, int start, int end) {
 		super();
 		this.param = param;
 		this.start = start;
@@ -35,16 +35,16 @@ public abstract class VirtualTask extends RecursiveTask<List<TaskResult>>{
 		if(end - start > 1) {
 			
 			int mid = (start + end) / 2 ;	
-			List<VirtualPortTask> tasks = new ArrayList<>();
+			List<VirtualTask> tasks = new ArrayList<>();
 			//拆分任务
 			for(VirtualPortTask task : this.splitTasks(start, mid, end)) {
 				tasks.add(task);
 			}			
-			Collection<VirtualPortTask> results = ForkJoinTask.invokeAll(tasks);
+			Collection<VirtualTask> results = ForkJoinTask.invokeAll(tasks);
 			/*
 			 * 收集每个任务单元的执行结果
 			 */
-			for(VirtualPortTask thread : results) {
+			for(VirtualTask thread : results) {
 				 List<TaskResult> resultList = thread.join();
 				 list.addAll(resultList);
 			}
@@ -66,7 +66,7 @@ public abstract class VirtualTask extends RecursiveTask<List<TaskResult>>{
 					// TODO Auto-generated catch block
 					
 					dealException(e, trans, list);
-            break;
+          				break;
 				}
     
 			}
@@ -133,5 +133,5 @@ public abstract class VirtualTask extends RecursiveTask<List<TaskResult>>{
 	 * @param end
 	 * @return
 	 */
-	protected abstract List<? extends VirtualPortTask> splitTasks(int start, int mid, int end);
+	protected abstract List<? extends VirtualTask> splitTasks(int start, int mid, int end);
 }
